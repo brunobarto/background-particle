@@ -2,88 +2,682 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Chrome Hearts–Style Portfolio</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
+  <title>♱ Gothic Portfolio ♱</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050509;
+      --bg-soft: #0b0b12;
+      --fg: #f5f1ea;
+      --accent: #b10f2e;
+      --accent-soft: #4b0b18;
+      --muted: #8b8680;
+      --font-main: "Georgia", "Times New Roman", serif;
+      --font-mono: "Courier New", monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-main);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    /* ASCII particle background */
+    #ascii-layer {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: radial-gradient(circle at top, #151520 0, #050509 55%);
+      overflow: hidden;
+      pointer-events: none;
+      font-family: var(--font-mono);
+      color: var(--muted);
+      mix-blend-mode: screen;
+    }
+
+    .ascii-char {
+      position: absolute;
+      font-size: 12px;
+      opacity: 0.15;
+      transition: opacity 0.3s ease-out;
+      will-change: transform;
+    }
+
+    /* Layout */
+    main {
+      position: relative;
+      min-height: 100vh;
+      scroll-snap-type: y mandatory;
+    }
+
+    section {
+      position: relative;
+      min-height: 100vh;
+      padding: 6rem clamp(2rem, 6vw, 6rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      scroll-snap-align: start;
+    }
+
+    section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(177, 15, 46, 0.08), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.8s ease-out;
+      pointer-events: none;
+    }
+
+    section.is-visible::before {
+      opacity: 1;
+    }
+
+    /* Gothic headings */
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.35em;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    h1, h2 {
+      font-weight: 400;
+      line-height: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    h1 {
+      font-size: clamp(3.5rem, 9vw, 6rem);
+    }
+
+    h2 {
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+    }
+
+    .gothic-mark {
+      color: var(--accent);
+      text-shadow: 0 0 12px rgba(177, 15, 46, 0.7);
+    }
+
+    p {
+      max-width: 40rem;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .lead {
+      font-size: 1.05rem;
+      color: var(--fg);
+    }
+
+    /* Nav */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 1.25rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .brand {
+      pointer-events: auto;
+      font-size: 0.85rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    nav {
+      display: flex;
+      gap: 1.5rem;
+      pointer-events: auto;
+    }
+
+    nav a {
+      position: relative;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      text-decoration: none;
+      color: var(--muted);
+      padding-bottom: 0.2rem;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.25s ease-out;
+    }
+
+    nav a:hover::after,
+    nav a.is-active::after {
+      width: 100%;
+    }
+
+    nav a.is-active {
+      color: var(--fg);
+    }
+
+    /* Sections */
+    #hero {
+      align-items: flex-start;
+    }
+
+    #hero h1 {
+      max-width: 18ch;
+    }
+
+    .hero-meta {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+    }
+
+    .hero-meta span {
+      display: block;
+      color: var(--fg);
+      margin-top: 0.4rem;
+      letter-spacing: 0.08em;
+      text-transform: none;
+      font-size: 0.9rem;
+    }
+
+    #work .grid {
+      margin-top: 2.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.75rem;
+    }
+
+    .card {
+      border: 1px solid rgba(245, 241, 234, 0.08);
+      background: linear-gradient(135deg, rgba(11, 11, 18, 0.9), rgba(5, 5, 9, 0.95));
+      padding: 1.5rem 1.4rem 1.6rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s ease-out, transform 0.25s ease-out, box-shadow 0.25s ease-out;
+    }
+
+    .card::before {
+      content: "†";
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 4rem;
+      color: rgba(177, 15, 46, 0.08);
+      right: -0.5rem;
+      bottom: -1.5rem;
+      transform: rotate(-18deg);
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      margin-bottom: 0.75rem;
+    }
+
+    .card p {
+      margin-top: 0.4rem;
+      font-size: 0.85rem;
+    }
+
+    .card small {
+      display: block;
+      margin-top: 0.9rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .card:hover {
+      border-color: rgba(177, 15, 46, 0.7);
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+    }
+
+    #about .columns {
+      margin-top: 2.5rem;
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.4fr);
+      gap: 3rem;
+    }
+
+    #about ul {
+      list-style: none;
+      margin-top: 1.25rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    #about li + li {
+      margin-top: 0.4rem;
+    }
+
+    #about strong {
+      color: var(--fg);
+      font-weight: 400;
+    }
+
+    #contact .links {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .link-pill {
+      border-radius: 999px;
+      border: 1px solid rgba(245, 241, 234, 0.12);
+      padding: 0.7rem 1.4rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      text-decoration: none;
+      color: var(--fg);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: radial-gradient(circle at top left, rgba(177, 15, 46, 0.25), rgba(5, 5, 9, 0.95));
+      transition: border-color 0.25s ease-out, background 0.25s ease-out, transform 0.2s ease-out;
+    }
+
+    .link-pill span {
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    .link-pill:hover {
+      border-color: rgba(177, 15, 46, 0.9);
+      background: radial-gradient(circle at top left, rgba(177, 15, 46, 0.45), rgba(5, 5, 9, 0.98));
+      transform: translateY(-2px);
+    }
+
+    footer {
+      padding: 1.5rem 2.5rem 2rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    /* Cursor aura */
+    .cursor-aura {
+      position: fixed;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 1px solid rgba(177, 15, 46, 0.4);
+      box-shadow: 0 0 40px rgba(177, 15, 46, 0.35);
+      pointer-events: none;
+      mix-blend-mode: screen;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.25s ease-out, transform 0.08s ease-out;
+      z-index: 5;
+    }
+
+    @media (max-width: 800px) {
+      header {
+        padding-inline: 1.5rem;
+      }
+
+      section {
+        padding-inline: 1.5rem;
+      }
+
+      #about .columns {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      footer {
+        padding-inline: 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
-  <canvas id="ascii-bg"></canvas>
+  <div id="ascii-layer"></div>
+  <div class="cursor-aura"></div>
 
-  <div class="page-frame">
-    <header class="hero section" data-section>
-      <div class="hero-inner">
-        <div class="hero-tagline">PORTFOLIO</div>
-        <h1 class="hero-title">
-          BRUNO<br />
-          <span>CREATIVE ENGINEER</span>
-        </h1>
-        <p class="hero-sub">
-          Data, interfaces, and code—crafted with a heavy, gothic edge.
-        </p>
-        <div class="hero-meta">
-          <span>MARSEILLE</span>
-          <span>AVAILABLE FOR COLLABS</span>
+  <header>
+    <div class="brand">Studio <span>†</span> Nocturne</div>
+    <nav>
+      <a href="#hero" class="is-active">Intro</a>
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="hero" class="is-visible">
+      <div class="eyebrow">Portfolio</div>
+      <h1>
+        Crafting <span class="gothic-mark">animated</span><br />
+        interfaces for the<br />
+        sleepless web.
+      </h1>
+      <p class="lead">
+        I design and build interactive experiences with a taste for the nocturnal:
+        high‑contrast, typographic, and slightly haunted.
+      </p>
+      <div class="hero-meta">
+        <div>
+          Role
+          <span>Creative Developer · UI Engineer</span>
+        </div>
+        <div>
+          Focus
+          <span>Experimental front‑ends, scroll‑driven stories, ASCII atmospheres</span>
+        </div>
+        <div>
+          Location
+          <span>Somewhere after midnight</span>
         </div>
       </div>
-    </header>
+    </section>
 
-    <main>
-      <section class="section section--dark" data-section>
-        <div class="section-inner">
-          <h2 class="section-title">WORK</h2>
-          <div class="grid">
-            <article class="card">
-              <h3 class="card-title">01 / DATA SYSTEMS</h3>
-              <p class="card-body">
-                High-volume pipelines, observability, and resilient architectures for real-world products.
-              </p>
-            </article>
-            <article class="card">
-              <h3 class="card-title">02 / CREATIVE TOOLS</h3>
-              <p class="card-body">
-                Scroll-driven experiences, ASCII-driven visuals, and minimal, expressive UI systems.
-              </p>
-            </article>
-            <article class="card">
-              <h3 class="card-title">03 / OPEN SOURCE</h3>
-              <p class="card-body">
-                Modular libraries and templates for teams who care about craft and maintainability.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
+    <section id="work">
+      <div class="eyebrow">Selected Work</div>
+      <h2>Fragments from the <span class="gothic-mark">noir</span> archive.</h2>
+      <p>
+        A small collection of interfaces and experiments where typography, motion, and code
+        meet in the dark.
+      </p>
 
-      <section class="section section--light" data-section>
-        <div class="section-inner">
-          <h2 class="section-title">FOCUS</h2>
-          <div class="pill-row">
-            <span class="pill">DATA ENGINEERING</span>
-            <span class="pill">CREATIVE CODING</span>
-            <span class="pill">INTERACTION DESIGN</span>
-            <span class="pill">ASCII AESTHETICS</span>
-          </div>
-          <p class="section-text">
-            I design systems and interfaces that feel tactile—where every scroll, hover, and click
-            reveals intent.
+      <div class="grid">
+        <article class="card">
+          <h3>Cathedral Console</h3>
+          <p>
+            A terminal‑inspired landing page where commands light up stained‑glass panels,
+            blending brutalist layout with liturgical motion.
+          </p>
+          <small>HTML · CSS · Vanilla JS · Web Animations</small>
+        </article>
+
+        <article class="card">
+          <h3>Nocturne Scroll</h3>
+          <p>
+            Scroll‑driven narrative for a music label, using parallax glyphs and spectral
+            gradients that react to tempo and track changes.
+          </p>
+          <small>Scroll‑linked animations · Audio‑reactive UI</small>
+        </article>
+
+        <article class="card">
+          <h3>Grimoire Grid</h3>
+          <p>
+            A catalog of occult‑themed posters, rendered entirely with CSS and SVG, each
+            piece generated from a seed phrase.
+          </p>
+          <small>Procedural layout · Generative typography</small>
+        </article>
+
+        <article class="card">
+          <h3>Midnight Systems</h3>
+          <p>
+            Design system for a dark‑mode‑only SaaS, with ritual‑like onboarding flows and
+            carefully tuned micro‑interactions.
+          </p>
+          <small>Design systems · Interaction design</small>
+        </article>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="eyebrow">About</div>
+      <h2>Building interfaces like <span class="gothic-mark">rituals</span>.</h2>
+      <div class="columns">
+        <div>
+          <p>
+            I work at the intersection of design and engineering, with a focus on
+            atmosphere. I like interfaces that feel intentional: every transition, every
+            letter‑spacing, every delay tuned like a chord.
+          </p>
+          <p>
+            My tools are HTML, CSS, and JavaScript—no frameworks required when the canvas
+            is small and the details matter. I enjoy crafting single‑page experiences that
+            tell a story as you scroll.
           </p>
         </div>
-      </section>
-
-      <section class="section section--dark section--end" data-section>
-        <div class="section-inner">
-          <h2 class="section-title">CONTACT</h2>
-          <p class="section-text">
-            Want to build something sharp, minimal, and a little bit obsessive?
-          </p>
-          <a href="mailto:you@example.com" class="cta-link">
-            EMAIL ME
-          </a>
+        <div>
+          <p><strong>Things I care about:</strong></p>
+          <ul>
+            <li>High‑contrast, legible dark themes that still feel luxurious.</li>
+            <li>Scroll‑driven narratives that never feel like gimmicks.</li>
+            <li>Interfaces that degrade gracefully and load fast.</li>
+            <li>Small, expressive details: hover states, micro‑copy, cursor play.</li>
+          </ul>
         </div>
-      </section>
-    </main>
-  </div>
+      </div>
+    </section>
 
-  <script src="script.js"></script>
+    <section id="contact">
+      <div class="eyebrow">Contact</div>
+      <h2>Summon the <span class="gothic-mark">developer</span>.</h2>
+      <p>
+        If you’re working on something that lives best after dark—music, art, tools, or
+        stories—I’d love to talk about building a fitting interface for it.
+      </p>
+
+      <div class="links">
+        <a class="link-pill" href="mailto:you@example.com">
+          <span>✉</span>
+          Email
+        </a>
+        <a class="link-pill" href="#" target="_blank" rel="noreferrer">
+          <span>⌘</span>
+          GitHub
+        </a>
+        <a class="link-pill" href="#" target="_blank" rel="noreferrer">
+          <span>†</span>
+          Dribbble / Gallery
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>© <span id="year"></span> Studio Nocturne</div>
+    <div>Built with HTML · CSS · JS · ASCII ghosts</div>
+  </footer>
+
+  <script>
+    // ===== BASIC UTILITIES =====
+    const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+    // ===== ASCII PARTICLE FIELD =====
+    (function initAsciiField() {
+      const layer = document.getElementById("ascii-layer");
+      const chars = ["†", "+", "*", "#", ":", ".", "x"];
+      const particleCount = 140;
+      const particles = [];
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      let mouseActive = false;
+
+      function createParticle() {
+        const el = document.createElement("div");
+        el.className = "ascii-char";
+        el.textContent = chars[Math.floor(Math.random() * chars.length)];
+        layer.appendChild(el);
+
+        const p = {
+          el,
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          baseSpeed: 0.15 + Math.random() * 0.35,
+          drift: (Math.random() - 0.5) * 0.2,
+          offset: Math.random() * Math.PI * 2,
+          size: 10 + Math.random() * 8
+        };
+        el.style.fontSize = p.size + "px";
+        particles.push(p);
+      }
+
+      for (let i = 0; i < particleCount; i++) createParticle();
+
+      function onResize() {
+        // Keep them in bounds on resize
+        particles.forEach(p => {
+          p.x = (p.x / window.innerWidth) * window.innerWidth;
+          p.y = (p.y / window.innerHeight) * window.innerHeight;
+        });
+      }
+
+      window.addEventListener("resize", onResize);
+
+      window.addEventListener("mousemove", (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        mouseActive = true;
+      });
+
+      window.addEventListener("mouseleave", () => {
+        mouseActive = false;
+      });
+
+      function animate() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
+        particles.forEach((p) => {
+          // Vertical drift
+          p.y += p.baseSpeed;
+          p.x += p.drift + Math.sin(p.offset + p.y * 0.002) * 0.1;
+
+          // Wrap around
+          if (p.y > h + 20) p.y = -20;
+          if (p.x > w + 20) p.x = -20;
+          if (p.x < -20) p.x = w + 20;
+
+          // Cursor interaction: subtle repulsion
+          if (mouseActive) {
+            const dx = p.x - mouseX;
+            const dy = p.y - mouseY;
+            const distSq = dx * dx + dy * dy;
+            const radius = 180;
+            if (distSq < radius * radius) {
+              const dist = Math.sqrt(distSq) || 0.001;
+              const force = (radius - dist) / radius;
+              const strength = 0.9;
+              p.x += (dx / dist) * force * strength;
+              p.y += (dy / dist) * force * strength;
+              p.el.style.opacity = 0.35;
+            } else {
+              p.el.style.opacity = 0.15;
+            }
+          } else {
+            p.el.style.opacity = 0.15;
+          }
+
+          p.el.style.transform = `translate(${p.x}px, ${p.y}px)`;
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    })();
+
+    // ===== CURSOR AURA =====
+    (function initCursorAura() {
+      const aura = document.querySelector(".cursor-aura");
+      let visible = false;
+
+      window.addEventListener("mousemove", (e) => {
+        aura.style.left = e.clientX + "px";
+        aura.style.top = e.clientY + "px";
+        if (!visible) {
+          visible = true;
+          aura.style.opacity = "1";
+        }
+      });
+
+      window.addEventListener("mouseleave", () => {
+        visible = false;
+        aura.style.opacity = "0";
+      });
+
+      window.addEventListener("mousedown", () => {
+        aura.style.transform = "translate(-50%, -50%) scale(0.85)";
+      });
+
+      window.addEventListener("mouseup", () => {
+        aura.style.transform = "translate(-50%, -50%) scale(1)";
+      });
+    })();
+
+    // ===== SCROLL-DRIVEN SECTION & NAV STATE =====
+    (function initScrollSections() {
+      const sections = document.querySelectorAll("main section");
+      const navLinks = document.querySelectorAll("header nav a");
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              const id = entry.target.id;
+              navLinks.forEach((link) => {
+                link.classList.toggle("is-active", link.getAttribute("href") === "#" + id);
+              });
+            }
+          });
+        },
+        {
+          threshold: 0.45
+        }
+      );
+
+      sections.forEach((section) => observer.observe(section));
+    })();
+
+    // ===== FOOTER YEAR =====
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
